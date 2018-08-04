@@ -36,4 +36,4 @@ e$status.shannon <-function(z) {
 e$status.nEQR <-function(z) {
    if(is.na(z)) {return ("NA")}
    else {cut(z, breaks = c(0,0.2,0.4,0.6,0.8,1), include.lowest=TRUE,labels=quality)}
-   }  # check than max allowed = 1
+   }  # limits [0-1], both included. ok
