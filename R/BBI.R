@@ -52,9 +52,9 @@ BBI <- function(data, log=FALSE) {
 
   # in case of NGS data, removing unassigned OTU to speed up the process
   otu_list <- grep("OTU", tax_n[,1], ignore.case = F)
-  if (length(otu_list) > 0) tax_n <- tax_n[-otu_list,]
+  if (!is.null(otu_list)) tax_n <- tax_n[-otu_list,]
   # then isolate the compositon data from taxa (dat <- composition data AND tax_n <- taxa list)
-  if (length(otu_list) > 0)
+  if (!is.null(otu_list))
   {
     dat <-  data[-otu_list,2:dim(data)[2]]
   } else {
@@ -78,9 +78,9 @@ BBI <- function(data, log=FALSE) {
     queries[i,"original"] <- sp
     ### if uncultured or unknown as last rank, get the one before
     n=1
-    if (length(grep(";", as.character(tax_n[i,2]))) > 1 & length(grep("uncultu", sp, ignore.case = T)) > 0 | length(grep("unknown", sp, ignore.case = T)) > 0)
+    if (length(grep(";", as.character(tax_n[i,2]))) > 1 & !is.null(grep("uncultu", sp, ignore.case = T)) | !is.null(grep("unknown", sp, ignore.case = T))
     {
-      while (length(grep("uncultu", sp, ignore.case = T)) > 0 | length(grep("unknown", sp, ignore.case = T)) > 0)
+      while (!is.null(grep("uncultu", sp, ignore.case = T)) | !is.null(grep("unknown", sp, ignore.case = T)) # comprobar parentesis!!!
       {
         n = n+1
         sp <- tail(strsplit(as.character(tax_n[i,2]), ";")[[1]], n)[1]
@@ -123,7 +123,7 @@ BBI <- function(data, log=FALSE) {
       # and then exact match
       y <- grep(paste("^", sp, " sp.", "$", sep=""), eco_index[,"species"], ignore.case = TRUE)
       # if still not, there is no "genus sp." in the table, grab the species of the genus and median value
-      if (length(y) == 0)
+      if (is.null(y))
       {
         message(paste("   No exact match, trying to match other species of the genus", sp))
         if(log) cat(paste("   No exact match, trying to match other species of the genus", sp), file=log_file, fill=T, append=T)
@@ -177,7 +177,7 @@ BBI <- function(data, log=FALSE) {
       }
     }
     # if there is at least a match
-    else if (length(y) > 0)
+    else if (!is.null(y))
     {
       #message(sp)
       tmp <- eco_index[y,]
